@@ -1,0 +1,65 @@
+Name:             keycloak-55d7b545d9-87t8x
+Namespace:        keycloak
+Priority:         0
+Service Account:  default
+Node:             k8s-worker02/192.168.56.202
+Start Time:       Sat, 14 Mar 2026 17:01:28 -0600
+Labels:           app=keycloak
+                  pod-template-hash=55d7b545d9
+Annotations:      cni.projectcalico.org/containerID: da64d5ed72c043c0cda494a507d4940fddced577399ac9d91ce1eaa2f63f3984
+                  cni.projectcalico.org/podIP: 192.168.69.198/32
+                  cni.projectcalico.org/podIPs: 192.168.69.198/32
+Status:           Running
+IP:               192.168.69.198
+IPs:
+  IP:           192.168.69.198
+Controlled By:  ReplicaSet/keycloak-55d7b545d9
+Containers:
+  keycloak:
+    Container ID:  containerd://15c8891d8d312212487c3d515e67b9e673ccfacdc5e90186af43d7970efd8cef
+    Image:         quay.io/keycloak/keycloak:23.0
+    Image ID:      quay.io/keycloak/keycloak@sha256:14e99d6f5dd0516a5bdc82537b732cb85469ecdb15ad7fe5f11ff67521544db8
+    Port:          8080/TCP
+    Host Port:     0/TCP
+    Args:
+      start-dev
+    State:          Running
+      Started:      Sat, 14 Mar 2026 17:01:29 -0600
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:     250m
+      memory:  512Mi
+    Environment:
+      KEYCLOAK_ADMIN:           <set to the key 'KEYCLOAK_ADMIN' in secret 'keycloak-admin'>           Optional: false
+      KEYCLOAK_ADMIN_PASSWORD:  <set to the key 'KEYCLOAK_ADMIN_PASSWORD' in secret 'keycloak-admin'>  Optional: false
+      KC_HTTP_PORT:             8080
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-wp4wl (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-wp4wl:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  15m   default-scheduler  Successfully assigned keycloak/keycloak-55d7b545d9-87t8x to k8s-worker02
+  Normal  Pulled     15m   kubelet            Container image "quay.io/keycloak/keycloak:23.0" already present on machine
+  Normal  Created    15m   kubelet            Created container keycloak
+  Normal  Started    15m   kubelet            Started container keycloak
