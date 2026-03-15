@@ -25,7 +25,13 @@ Copiar el certificado al siguiente directorio.
 cp ~/keycloak-certs/tls.crt /etc/kubernetes/pki/keycloak-ca.crt
 ```
 
-En el archivo /etc/kubernetes/manifests/kube-apiserver.yaml
+Ejecutar el siguiente comando con el archivo yaml
+
+```bash
+kubectl apply -f 01-keycloak-tls.yaml
+```
+
+En el archivo `/etc/kubernetes/manifests/kube-apiserver.yaml`
 
 ```yaml
     - --oidc-issuer-url=https://192.168.56.201:30443/realms/kubernetes-demo
