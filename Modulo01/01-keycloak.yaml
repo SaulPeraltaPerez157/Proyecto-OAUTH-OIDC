@@ -1,3 +1,60 @@
+# =============================================================
+# NAMESPACE
+# =============================================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: keycloak
+ 
+---
+# =============================================================
+# PERSISTENT VOLUME - H2 data (hostPath)
+# Los datos se guardan en /data/keycloak-h2 en k8s-worker01
+# =============================================================
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: keycloak-h2-pv
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: /data/keycloak-h2        # <-- directorio en el nodo
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-worker01     # <-- ajusta al nodo deseado
+ 
+---
+# =============================================================
+# PERSISTENT VOLUME CLAIM
+# =============================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: keycloak-h2-pvc
+  namespace: keycloak
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 2Gi
+ 
+---
+# =============================================================
+# DEPLOYMENT - Keycloak con H2 persistente
+# =============================================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,15 +65,26 @@ spec:
   selector:
     matchLabels:
       app: keycloak
+  strategy:
+    type: Recreate                 # necesario con ReadWriteOnce
   template:
     metadata:
       labels:
         app: keycloak
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-worker01   # mismo nodo que el PV
+      initContainers:
+        - name: fix-permissions
+          image: busybox:1.36
+          command: ["sh", "-c", "chown -R 1000:1000 /opt/keycloak/data"]
+          volumeMounts:
+            - name: h2-storage
+              mountPath: /opt/keycloak/data
       containers:
         - name: keycloak
           image: quay.io/keycloak/keycloak:23.0
-          args: ["start-dev"]           # modo desarrollo (H2 embebida)
+          args: ["start-dev"]
           env:
             - name: KEYCLOAK_ADMIN
               valueFrom:
@@ -32,6 +100,9 @@ spec:
               value: "8080"
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: h2-storage
+              mountPath: /opt/keycloak/data   # donde Keycloak guarda H2
           resources:
             requests:
               cpu: "250m"
@@ -39,7 +110,15 @@ spec:
             limits:
               cpu: "1"
               memory: "1Gi"
+      volumes:
+        - name: h2-storage
+          persistentVolumeClaim:
+            claimName: keycloak-h2-pvc
+ 
 ---
+# =============================================================
+# SERVICE - Keycloak (igual que antes)
+# =============================================================
 apiVersion: v1
 kind: Service
 metadata:
