@@ -1,0 +1,26 @@
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger-demo
+  namespace: observability
+spec:
+  strategy: allInOne
+  allInOne:
+    image: jaegertracing/all-in-one:1.52
+  ingress:
+    enabled: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger-ui
+  namespace: observability
+spec:
+  selector:
+    app: jaeger
+    app.kubernetes.io/instance: jaeger-demo
+  ports:
+    - port: 16686
+      targetPort: 16686
+      nodePort: 30100
+  type: NodePort
