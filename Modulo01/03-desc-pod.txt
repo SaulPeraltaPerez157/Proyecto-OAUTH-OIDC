@@ -1,0 +1,132 @@
+Name:             keycloak-6449b98b5c-zbd7q
+Namespace:        keycloak
+Priority:         0
+Service Account:  default
+Node:             k8s-worker01/192.168.56.201
+Start Time:       Mon, 16 Mar 2026 14:46:37 -0600
+Labels:           app=keycloak
+                  pod-template-hash=6449b98b5c
+Annotations:      cni.projectcalico.org/containerID: 9e00b906ed323c42d3e01c30b9f0f57ee0f917c589f3b5070b93dea3c0299730
+                  cni.projectcalico.org/podIP: 10.244.79.76/32
+                  cni.projectcalico.org/podIPs: 10.244.79.76/32
+Status:           Running
+IP:               10.244.79.76
+IPs:
+  IP:           10.244.79.76
+Controlled By:  ReplicaSet/keycloak-6449b98b5c
+Init Containers:
+  fix-permissions:
+    Container ID:  containerd://5f38bd8ba881491c7e855e1598f34824d32ce625ca21d4522e5b931e97693bc6
+    Image:         busybox:1.36
+    Image ID:      docker.io/library/busybox@sha256:b9598f8c98e24d0ad42c1742c32516772c3aa2151011ebaf639089bd18c605b8
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      sh
+      -c
+      chown -R 1000:1000 /opt/keycloak/data
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Mon, 16 Mar 2026 19:22:26 -0600
+      Finished:     Mon, 16 Mar 2026 19:22:26 -0600
+    Ready:          True
+    Restart Count:  3
+    Environment:    <none>
+    Mounts:
+      /opt/keycloak/data from h2-storage (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-lf2pf (ro)
+Containers:
+  keycloak:
+    Container ID:  containerd://3d48700a06fe7601dbf0330aef58691a1bb8c614333c29f3a4246da522f512b6
+    Image:         quay.io/keycloak/keycloak:23.0
+    Image ID:      quay.io/keycloak/keycloak@sha256:14e99d6f5dd0516a5bdc82537b732cb85469ecdb15ad7fe5f11ff67521544db8
+    Port:          8443/TCP
+    Host Port:     0/TCP
+    Args:
+      start-dev
+    State:          Running
+      Started:      Mon, 16 Mar 2026 19:22:27 -0600
+    Last State:     Terminated
+      Reason:       Unknown
+      Exit Code:    255
+      Started:      Mon, 16 Mar 2026 17:48:46 -0600
+      Finished:     Mon, 16 Mar 2026 19:21:38 -0600
+    Ready:          True
+    Restart Count:  3
+    Limits:
+      cpu:     1
+      memory:  1Gi
+    Requests:
+      cpu:     250m
+      memory:  512Mi
+    Environment:
+      KEYCLOAK_ADMIN:                              <set to the key 'KEYCLOAK_ADMIN' in secret 'keycloak-admin'>           Optional: false
+      KEYCLOAK_ADMIN_PASSWORD:                     <set to the key 'KEYCLOAK_ADMIN_PASSWORD' in secret 'keycloak-admin'>  Optional: false
+      KC_HTTP_ENABLED:                             false
+      KC_TRACING_ENABLED:                          true
+      KC_TRACING_ENDPOINT:                         http://jaeger-demo-collector.observability.svc.cluster.local:4317
+      KC_TRACING_SERVICE_NAME:                     keycloak
+      QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:  http://jaeger-demo-collector.observability.svc.cluster.local:4317
+      QUARKUS_OTEL_TRACES_ENABLED:                 true
+      KC_HTTPS_PORT:                               8443
+      KC_HTTPS_CERTIFICATE_FILE:                   /opt/keycloak/certs/tls.crt
+      KC_HTTPS_CERTIFICATE_KEY_FILE:               /opt/keycloak/certs/tls.key
+      QUARKUS_OTEL_ENABLED:                        true
+      QUARKUS_OTEL_EXPORTER_OTLP_ENDPOINT:         http://jaeger-demo-collector.observability.svc.cluster.local:4317
+      QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:  http://10.100.191.183:4317
+      QUARKUS_OTEL_EXPORTER_OTLP_ENDPOINT:         http://10.100.191.183:4317
+    Mounts:
+      /opt/keycloak/certs from tls-certs (rw)
+      /opt/keycloak/data from h2-storage (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-lf2pf (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  h2-storage:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  keycloak-h2-pvc
+    ReadOnly:   false
+  tls-certs:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  keycloak-tls-secret
+    Optional:    false
+  kube-api-access-lf2pf:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              kubernetes.io/hostname=k8s-worker01
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason          Age                    From     Message
+  ----    ------          ----                   ----     -------
+  Normal  SandboxChanged  3h41m (x2 over 3h41m)  kubelet  Pod sandbox changed, it will be killed and re-created.
+  Normal  Pulled          3h40m                  kubelet  Container image "busybox:1.36" already present on machine
+  Normal  Created         3h40m                  kubelet  Created container fix-permissions
+  Normal  Started         3h40m                  kubelet  Started container fix-permissions
+  Normal  Pulled          3h40m                  kubelet  Container image "quay.io/keycloak/keycloak:23.0" already present on machine
+  Normal  Created         3h40m                  kubelet  Created container keycloak
+  Normal  Started         3h40m                  kubelet  Started container keycloak
+  Normal  SandboxChanged  146m (x2 over 146m)    kubelet  Pod sandbox changed, it will be killed and re-created.
+  Normal  Pulled          146m                   kubelet  Container image "busybox:1.36" already present on machine
+  Normal  Created         146m                   kubelet  Created container fix-permissions
+  Normal  Started         146m                   kubelet  Started container fix-permissions
+  Normal  Pulled          146m                   kubelet  Container image "quay.io/keycloak/keycloak:23.0" already present on machine
+  Normal  Created         146m                   kubelet  Created container keycloak
+  Normal  Started         146m                   kubelet  Started container keycloak
+  Normal  SandboxChanged  52m (x2 over 53m)      kubelet  Pod sandbox changed, it will be killed and re-created.
+  Normal  Pulled          52m                    kubelet  Container image "busybox:1.36" already present on machine
+  Normal  Created         52m                    kubelet  Created container fix-permissions
+  Normal  Started         52m                    kubelet  Started container fix-permissions
+  Normal  Pulled          52m                    kubelet  Container image "quay.io/keycloak/keycloak:23.0" already present on machine
+  Normal  Created         52m                    kubelet  Created container keycloak
+  Normal  Started         52m                    kubelet  Started container keycloak
+
