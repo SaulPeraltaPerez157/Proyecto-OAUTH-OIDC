@@ -12,3 +12,4 @@
 | Implementación del módulo 04 | 30 mins | Domingo 15 de marzo |
 | Implementación del módulo 05 | 2 hrs | Domingo 15 de marzo |
 | Implementación del módulo 06 | 30 mins | Domingo 15 de marzo |
+| Implementación del módulo 07 | 2 hrs | Lunes 16 de marzo |
